@@ -62,18 +62,18 @@ public class HandOrientationDetector : MonoBehaviour
     {
        // Check if the ray hits an object
         GameObject hitObject = hitInfo.collider.gameObject;
-        if (hitObject.transform.Find("Cube"))
+        if (hitObject.transform.Find("Wrist UI (left)"))
         {
-            hitObject.transform.Find("Cube").gameObject.SetActive(true);
+            hitObject.transform.Find("Wrist UI (left)").gameObject.SetActive(true);
             LastObjHit = hitObject;
         }      
     }
 
     void HideMenu()
     {
-        if(LastObjHit != null && LastObjHit.transform.Find("Cube"))
+        if(LastObjHit != null && LastObjHit.transform.Find("Wrist UI (left)"))
         {
-            LastObjHit.transform.Find("Cube").gameObject.SetActive(false);
+            LastObjHit.transform.Find("Wrist UI (left)").gameObject.SetActive(false);
         }
     }
 }
