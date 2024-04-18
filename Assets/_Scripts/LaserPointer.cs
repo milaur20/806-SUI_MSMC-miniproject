@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
@@ -7,6 +8,8 @@ public class LaserPointer : MonoBehaviour
 {
     public float lineLength = 5f; // Length of the line
     private LineRenderer lineRenderer;
+    public Vector3 endPoint;
+    public bool isHitting;
 
     void Start()
     {
@@ -22,7 +25,7 @@ public class LaserPointer : MonoBehaviour
     void Update()
     {
         // Calculate the endpoint of the line based on rotation
-        Vector3 endPoint = transform.position + transform.up * lineLength;
+        endPoint = transform.position + transform.up * lineLength;
 
         // Create a ray from the current position in the direction of transform.up
         Ray ray = new Ray(transform.position, transform.up);
@@ -31,11 +34,20 @@ public class LaserPointer : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, lineLength))
         {
+            isHitting = true;
             endPoint = hit.point; // Set the endpoint to the hit point
+        }
+        else
+        {
+            isHitting = false;
         }
 
         // Update the LineRenderer positions
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, endPoint);
+    }
+    public void resetIsHitting()
+    {
+        isHitting = false;
     }
 }
