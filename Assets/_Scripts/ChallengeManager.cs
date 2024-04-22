@@ -4,7 +4,7 @@ using Oculus.Interaction.Input;
 public class ChallengeManager : MonoBehaviour
 {
     public QuizSystem quizSystem;
-    public QuizQuestion quizQuestion;
+    //public QuizQuestion quizQuestion;
     public bool isConditionMet1 = false;
     public bool isConditionMet2 = false;
     public bool isConditionMet3 = false;
@@ -68,6 +68,10 @@ public float distanceToHmd;
 
     void Update()
     {
+        if(referenceObject == null || quizSystem.questionIndex != quizSystem.oldIndex)
+        {
+            referenceObject = quizSystem.quizQuestions[quizSystem.questionIndex].answerObj;
+        }
         //Debug.Log(quizSystem.quizQuestions[quizSystem.questionIndex].challengeType);
         if(quizSystem.quizQuestions[quizSystem.questionIndex].challengeType == 1)
         {
