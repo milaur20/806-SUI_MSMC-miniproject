@@ -3277,7 +3277,7 @@ GameObject:
   - component: {fileID: 577600481}
   - component: {fileID: 577600480}
   m_Layer: 0
-  m_Name: HP Pavilion Laptop (1)
+  m_Name: Laptop (real spider)
   m_TagString: Answer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11849,7 +11849,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1976484682430964615, guid: c9bb00a7405c93643acf59b22ad7aeca, type: 3}
       propertyPath: m_Name
-      value: spider (1)
+      value: simple moving spider
       objectReference: {fileID: 0}
     - target: {fileID: 1976484682430964615, guid: c9bb00a7405c93643acf59b22ad7aeca, type: 3}
       propertyPath: m_IsActive
@@ -12834,7 +12834,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_Name
-      value: Spider Prefab
+      value: semi real spider (small)
       objectReference: {fileID: 0}
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_IsActive
@@ -13322,7 +13322,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1976484682430964615, guid: c9bb00a7405c93643acf59b22ad7aeca, type: 3}
       propertyPath: m_Name
-      value: spider
+      value: simple spider (small)
       objectReference: {fileID: 0}
     - target: {fileID: 1976484682430964615, guid: c9bb00a7405c93643acf59b22ad7aeca, type: 3}
       propertyPath: m_IsActive
@@ -14520,7 +14520,7 @@ GameObject:
   - component: {fileID: 919132148018960799}
   - component: {fileID: 919132148018960800}
   m_Layer: 0
-  m_Name: HP Pavilion Laptop
+  m_Name: Laptop (simple spider)
   m_TagString: Answer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -49,7 +49,7 @@ public class QuizSystem : MonoBehaviour
     void Start()
     {
         originalPos = quizQuestions[questionIndex].answerObj.transform.position;
-        Debug.Log(questionIndex);
+        //Debug.Log(questionIndex);
         EnableAnswerObj();
         currentState = QuizState.Question;
     }
