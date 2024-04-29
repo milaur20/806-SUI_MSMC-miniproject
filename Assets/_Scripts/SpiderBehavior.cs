@@ -47,7 +47,7 @@ public class SpiderBehavior : MonoBehaviour
                 animator.SetBool("IsWalking", true);
                 break;
             case SpiderState.Attack:
-                Attack();
+                animator.SetTrigger("spiderHiss");
                 break;
             case SpiderState.Die:
                 // Implement die behavior
