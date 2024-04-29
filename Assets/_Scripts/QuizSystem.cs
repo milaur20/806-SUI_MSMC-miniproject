@@ -15,7 +15,6 @@ public enum QuizState
 {
     Question,
     Challenge,
-    AnswerEvaluation
 }
 
 public class QuizSystem : MonoBehaviour
