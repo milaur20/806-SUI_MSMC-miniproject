@@ -60,12 +60,11 @@ public class QuizSystem : MonoBehaviour
         {
             case QuizState.Question:
                 UpdateQuestionState();
+                Debug.Log("Question state");
                 break;
             case QuizState.Challenge:
                 UpdateChallengeState();
-                break;
-            case QuizState.AnswerEvaluation:
-                UpdateAnswerEvaluationState();
+                Debug.Log("Challenge state");
                 break;
         }
     }
@@ -76,14 +75,13 @@ public class QuizSystem : MonoBehaviour
         {
             skipEvaluation = false;
             hasCompletedChallenge = true;
-            currentState = QuizState.AnswerEvaluation;
             EvaluateAnswer(answeredYes);
             return;
         }
 
         if (questionIndex != oldIndex)
         {
-            if (!quizQuestions[questionIndex].provideChallenge)
+            if (!quizQuestions[questionIndex].provideChallenge || hasCompletedChallenge)
             {
                 GiveQuestion();
             }
@@ -97,7 +95,7 @@ public class QuizSystem : MonoBehaviour
     void UpdateChallengeState()
     {
         ProvideChallenge();
-        //currentState = QuizState.AnswerEvaluation;
+        CheckIfChallengeCompleted();
     }
 
     void UpdateAnswerEvaluationState()
@@ -132,13 +130,17 @@ public class QuizSystem : MonoBehaviour
 
     void CheckIfChallengeCompleted()
     {
-        if (quizQuestions[questionIndex].challengeType == 1)
+        if (quizQuestions[questionIndex].challengeType == 1 && !hasCompletedChallenge)
         {
             AreHandsCloseToReferenceObject();
         }
-        else if (quizQuestions[questionIndex].challengeType == 2)
+        else if (quizQuestions[questionIndex].challengeType == 2 && !hasCompletedChallenge)
         {
             IsHmdCloseToReferenceObject();
+        }
+        else
+        {
+            currentState = QuizState.Question;
         }
     }
 
@@ -230,6 +232,7 @@ public class QuizSystem : MonoBehaviour
         if (distanceToLeftHand <= distanceThreshold || distanceToRightHand <= distanceThreshold)
         {
             hasCompletedChallenge = true;
+            currentState = QuizState.Question;
         }
     }
 
@@ -240,6 +243,7 @@ public class QuizSystem : MonoBehaviour
         if (distanceToHmd <= distanceThreshold)
         {
             hasCompletedChallenge = true;
+            currentState = QuizState.Question;
         }
     }
 }
