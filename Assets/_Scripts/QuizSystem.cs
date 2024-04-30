@@ -1,113 +1,153 @@
-// Importing necessary libraries
 using UnityEngine;
 using TMPro;
-using Oculus.Voice.Core.Bindings.Android;
 
-// Serializable class to hold quiz question data
 [System.Serializable]
 public class QuizQuestion
 {
-    public string questionText; // Text of the question
-    public bool answeredYes; // Whether the question was answered with 'Yes'
-    public bool provideChallenge; // Whether the question provides a challenge
-    public int challengeType; // Type of challenge: 1 = put hand close to object, 2 = put head close to object
-    public GameObject answerObj; // The object that represents the answer
+    public string questionText;
+    public bool answeredYes;
+    public bool provideChallenge;
+    public int challengeType;
+    public GameObject answerObj;
 }
 
-// Main class for the quiz system
+public enum QuizState
+{
+    Question,
+    Challenge,
+}
+
 public class QuizSystem : MonoBehaviour
 {
-    public ChallengeManager challengeManager; // Reference to the challenge manager
-    public int questionIndex; // Index of the current question
-    public bool skipEvaluation; // Whether to skip evaluation
-    public bool hasCompletedChallenge; // Whether the challenge has been completed
-    public int oldIndex = -1; // Index of the previous question
+    public QuizState currentState;
+    public bool answeredYes;
+    public int questionIndex;
+    public bool skipEvaluation;
+    public bool hasCompletedChallenge;
+    public int oldIndex = -1;
 
-    public TextMeshProUGUI questionText; // UI element to display the question text
+    public float distanceThreshold = 0.1f;
+    public float distanceToLeftHand;
+    public float distanceToRightHand;
+    public TextMeshProUGUI questionText;
 
-    // Serialized fields for various UI elements
     [SerializeField] GameObject ui;
     [SerializeField] GameObject yesZone;
     [SerializeField] GameObject noZone;
-    public Vector3 originalPos; // Original position of the answer object
+    public Vector3 originalPos;
 
+    public GameObject leftHand;
+    public GameObject rightHand;
+    public GameObject headset;
+    public GameObject referenceObject;
 
-    public bool skipQuestion = false;
-    private bool answeredYes = false;
-    public QuizQuestion[] quizQuestions; // Array of quiz questions
+    public QuizQuestion[] quizQuestions;
 
-    // Method called at the start of the game
+    
+
     void Start()
     {
-        challengeManager = FindObjectOfType<ChallengeManager>(); // Find the challenge manager in the scene
-        originalPos = quizQuestions[questionIndex].answerObj.transform.position; // Save the original position of the answer object
-        Debug.Log(questionIndex);
-        EnableAnswerObj(); // Enable the answer object
+        originalPos = quizQuestions[questionIndex].answerObj.transform.position;
+        //Debug.Log(questionIndex);
+        EnableAnswerObj();
+        currentState = QuizState.Question;
     }
 
-    // Method called every frame
     void Update()
     {
-        if(skipQuestion)
+        switch (currentState)
         {
-            skipQuestion = false;
+            case QuizState.Question:
+                UpdateQuestionState();
+                Debug.Log("Question state");
+                break;
+            case QuizState.Challenge:
+                UpdateChallengeState();
+                Debug.Log("Challenge state");
+                break;
+        }
+    }
+
+    void UpdateQuestionState()
+    {
+        if (skipEvaluation)
+        {
+            skipEvaluation = false;
             hasCompletedChallenge = true;
             EvaluateAnswer(answeredYes);
+            return;
         }
-        // If the current question does not provide a challenge and it's not the same as the old question, update the question
-        if(!quizQuestions[questionIndex].provideChallenge && questionIndex != oldIndex)
+
+        if (questionIndex != oldIndex)
         {
-            UpdateQuestion();
-        }
-        
-        // If the current question provides a challenge, the challenge has been completed, and it's the same as the old question, update the question
-        if(quizQuestions[questionIndex].provideChallenge && hasCompletedChallenge && questionIndex == oldIndex)
-        {
-            UpdateQuestion();
-        }
-        
-        // If the current question provides a challenge, the challenge has not been completed, and it's not the same as the old question, provide the challenge
-        if (quizQuestions[questionIndex].provideChallenge && !hasCompletedChallenge && questionIndex != oldIndex)
-        {
-            if (quizQuestions[questionIndex].provideChallenge)
+            if (!quizQuestions[questionIndex].provideChallenge || hasCompletedChallenge)
             {
-                string challengeText = "";
-
-                // Set the challenge text based on the challenge type
-                if (quizQuestions[questionIndex].challengeType == 1)
-                {
-                    challengeText = "Put your hand close to the spider.";
-                }
-                else if (quizQuestions[questionIndex].challengeType == 2)
-                {
-                    challengeText = "Put your head close to the spider.";
-                }
-
-                // If there is a challenge text, update the question text with it, update the question, and then restore the original question text
-                if (!string.IsNullOrEmpty(challengeText))
-                {
-                    string originalQuestionText = quizQuestions[questionIndex].questionText;
-                    quizQuestions[questionIndex].questionText = challengeText;
-                    UpdateQuestion();
-                    quizQuestions[questionIndex].questionText = originalQuestionText;
-                }
+                GiveQuestion();
             }
             else
             {
-                UpdateQuestion();
+                currentState = QuizState.Challenge;
             }
         }
     }
 
-    // Method to update the question text in the UI
-    void UpdateQuestion()
+    void UpdateChallengeState()
     {
-        ui.GetComponent<TextMeshProUGUI>().text = quizQuestions[questionIndex].questionText;
-        hasCompletedChallenge = false;
-        //Debug.Log("Question: " + quizQuestions[questionIndex].questionText);
+        ProvideChallenge();
+        CheckIfChallengeCompleted();
     }
 
-    // Method to evaluate the answer to a question
+    void UpdateAnswerEvaluationState()
+    {
+        CheckIfChallengeCompleted();
+        if (hasCompletedChallenge)
+        {
+            currentState = QuizState.Question;
+            GiveQuestion();
+        }
+    }
+
+    void ProvideChallenge()
+    {
+        Debug.Log("Providing challenge");
+        string challengeText = "";
+
+        if (quizQuestions[questionIndex].challengeType == 1)
+        {
+            challengeText = "Put your hand close to the spider.";
+        }
+        else if (quizQuestions[questionIndex].challengeType == 2)
+        {
+            challengeText = "Put your head close to the spider.";
+        }
+
+        if (!string.IsNullOrEmpty(challengeText))
+        {
+            ui.GetComponent<TextMeshProUGUI>().text = challengeText;
+        }
+    }
+
+    void CheckIfChallengeCompleted()
+    {
+        if (quizQuestions[questionIndex].challengeType == 1 && !hasCompletedChallenge)
+        {
+            AreHandsCloseToReferenceObject();
+        }
+        else if (quizQuestions[questionIndex].challengeType == 2 && !hasCompletedChallenge)
+        {
+            IsHmdCloseToReferenceObject();
+        }
+        else
+        {
+            currentState = QuizState.Question;
+        }
+    }
+
+    void GiveQuestion()
+    {
+        ui.GetComponent<TextMeshProUGUI>().text = quizQuestions[questionIndex].questionText;
+    }
+
     void EvaluateAnswer(bool answeredYes)
     {
         quizQuestions[questionIndex].answeredYes = answeredYes;
@@ -118,34 +158,33 @@ public class QuizSystem : MonoBehaviour
         EnableAnswerObj();
     }
 
-    // Method called when the answer object is let go
     public void LetGo()
     {
-
-        // Get all child colliders of the answer object
+        Debug.Log("Let go");
+        Collider objColliders = quizQuestions[questionIndex].answerObj.GetComponent<Collider>();
         Collider[] childColliders = quizQuestions[questionIndex].answerObj.GetComponentsInChildren<Collider>(true);
+        Debug.Log(childColliders.Length);
 
-        // Loop through all child colliders
         foreach (Collider childCollider in childColliders)
         {
-            // If the child collider is active and tagged as 'Answer'
             if (childCollider.gameObject.activeSelf && childCollider.CompareTag("Answer"))
             {
-                // If the child collider intersects with the 'Yes' zone, evaluate the answer as 'Yes'
-                if (yesZone.GetComponent<Collider>().bounds.Intersects(childCollider.bounds))
+                Debug.Log("Answer object found");
+                if (yesZone.GetComponentInChildren<Collider>().bounds.Intersects(childCollider.bounds))
                 {
                     Debug.Log("Answered Yes");
                     answeredYes = true;
                     ResetObjtoOriginalPos(childCollider.gameObject);
                     EvaluateAnswer(answeredYes);
+                    break;
                 }
-                // If the child collider intersects with the 'No' zone, evaluate the answer as 'No'
-                else if (noZone.GetComponent<Collider>().bounds.Intersects(childCollider.bounds))
+                else if (noZone.GetComponentInChildren<Collider>().bounds.Intersects(childCollider.bounds))
                 {
                     Debug.Log("Answered No");
                     answeredYes = false;
                     ResetObjtoOriginalPos(childCollider.gameObject);
                     EvaluateAnswer(answeredYes);
+                    break;
                 }
                 else
                 {
@@ -161,7 +200,6 @@ public class QuizSystem : MonoBehaviour
         Debug.LogWarning("No active child object with collider found on answer object.");
     }
 
-    // Method to reset the position of the answer object to its original position
     private void ResetObjtoOriginalPos(GameObject answerChildObj)
     {
         answerChildObj.transform.position = originalPos;
@@ -169,17 +207,42 @@ public class QuizSystem : MonoBehaviour
         Debug.Log("Resetting object to original position");
     }
 
-    // Method to enable the answer object for the current question
     private void EnableAnswerObj()
     {
-        
-        if(quizQuestions[questionIndex].answerObj.activeSelf == false)
+        if (quizQuestions[questionIndex].answerObj.activeSelf == false)
         {
             quizQuestions[questionIndex].answerObj.SetActive(true);
         }
-        if(quizQuestions[oldIndex].answerObj.activeSelf == true)
+        if (quizQuestions[oldIndex].answerObj.activeSelf == true)
         {
             quizQuestions[oldIndex].answerObj.SetActive(false);
+        }
+    }
+
+    public void AreHandsCloseToReferenceObject()
+    {
+        if (referenceObject == null)
+        {
+            referenceObject = quizQuestions[questionIndex].answerObj;
+        }
+        distanceToLeftHand = Vector3.Distance(leftHand.transform.position, referenceObject.transform.position);
+        distanceToRightHand = Vector3.Distance(rightHand.transform.position, referenceObject.transform.position);
+
+        if (distanceToLeftHand <= distanceThreshold || distanceToRightHand <= distanceThreshold)
+        {
+            hasCompletedChallenge = true;
+            currentState = QuizState.Question;
+        }
+    }
+
+    void IsHmdCloseToReferenceObject()
+    {
+        float distanceToHmd = Vector3.Distance(headset.transform.position, referenceObject.transform.position);
+
+        if (distanceToHmd <= distanceThreshold)
+        {
+            hasCompletedChallenge = true;
+            currentState = QuizState.Question;
         }
     }
 }
