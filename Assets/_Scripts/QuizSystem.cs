@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using Oculus.Interaction;
 
 [System.Serializable]
 public class QuizQuestion
@@ -15,28 +14,34 @@ public class QuizQuestion
 public enum QuizState
 {
     Question,
-    Challenge,
+    Challenge
+}
+
+public enum ChallengeStage
+{
+    ProvideChallenge,
+    ListenForCompletion
 }
 
 public class QuizSystem : MonoBehaviour
 {
-    private ActiveStateSelector gunPose;
-    public QuizState currentState;
-    public bool answeredYes;
-    public int questionIndex;
+    private QuizState currentState = QuizState.Question;
+    private ChallengeStage currentChallengeState = ChallengeStage.ProvideChallenge;
+    private bool answeredYes;
     public bool skipEvaluation;
     public bool hasCompletedChallenge;
+    public int questionIndex;
     public int oldIndex = -1;
 
     public float distanceThreshold = 0.1f;
     public float distanceToLeftHand;
     public float distanceToRightHand;
+
     public TextMeshProUGUI questionText;
 
     [SerializeField] GameObject ui;
     [SerializeField] GameObject yesZone;
     [SerializeField] GameObject noZone;
-    public Vector3 originalPos;
 
     public GameObject leftHand;
     public GameObject rightHand;
@@ -45,38 +50,36 @@ public class QuizSystem : MonoBehaviour
 
     public QuizQuestion[] quizQuestions;
 
-    
+    private Vector3 originalPos;
 
-    void Start()
+    private void Start()
     {
         originalPos = quizQuestions[questionIndex].answerObj.transform.position;
-        //Debug.Log(questionIndex);
         EnableAnswerObj();
-        currentState = QuizState.Question;
     }
 
-    void Update()
+    private void Update()
     {
         switch (currentState)
         {
             case QuizState.Question:
                 UpdateQuestionState();
-                //Debug.Log("Question state");
                 break;
             case QuizState.Challenge:
                 UpdateChallengeState();
-                //Debug.Log("Challenge state");
                 break;
         }
     }
 
-    void UpdateQuestionState()
+    private void UpdateQuestionState()
     {
         if (skipEvaluation)
         {
-            skipEvaluation = false;
             hasCompletedChallenge = true;
+            HasUserFormedPistol();
             EvaluateAnswer(answeredYes);
+            skipEvaluation = false;
+            currentState = QuizState.Question;
             return;
         }
 
@@ -93,67 +96,73 @@ public class QuizSystem : MonoBehaviour
         }
     }
 
-    void UpdateChallengeState()
+    private void UpdateChallengeState()
     {
-        ProvideChallenge();
-        CheckIfChallengeCompleted();
+        switch (currentChallengeState)
+        {
+            case ChallengeStage.ProvideChallenge:
+                ProvideChallenge();
+                break;
+            case ChallengeStage.ListenForCompletion:
+                CheckIfChallengeCompleted();
+                break;
+        }
     }
 
-    void ProvideChallenge()
+    private void ProvideChallenge()
     {
-        Debug.Log("Providing challenge");
         string challengeText = "";
 
-        if (quizQuestions[questionIndex].challengeType == 1)
+        switch (quizQuestions[questionIndex].challengeType)
         {
-            challengeText = "Put your hand close to the spider.";
-        }
-        else if (quizQuestions[questionIndex].challengeType == 2)
-        {
-            challengeText = "Put your head close to the spider.";
-        }
-        else if (quizQuestions[questionIndex].challengeType == 3)
-        {
-            quizQuestions[questionIndex].answerObj.SetActive(false);
-            challengeText = "Form a pistol with your hand, and aim here.";
+            case 1:
+                challengeText = "Put your hand close to the spider.";
+                break;
+            case 2:
+                challengeText = "Put your head close to the spider.";
+                break;
+            case 3:
+                challengeText = "Form a pistol with your hand, and aim here.";
+                break;
         }
 
         if (!string.IsNullOrEmpty(challengeText))
         {
             ui.GetComponent<TextMeshProUGUI>().text = challengeText;
         }
+        currentChallengeState = ChallengeStage.ListenForCompletion;
     }
 
-    void CheckIfChallengeCompleted()
+    private void CheckIfChallengeCompleted()
     {
-        if (quizQuestions[questionIndex].challengeType == 1 && !hasCompletedChallenge)
+        switch (quizQuestions[questionIndex].challengeType)
         {
-            AreHandsCloseToReferenceObject();
+            case 1:
+                if (!hasCompletedChallenge) AreHandsCloseToReferenceObject();
+                break;
+            case 2:
+                if (!hasCompletedChallenge) IsHmdCloseToReferenceObject();
+                break;
         }
-        else if (quizQuestions[questionIndex].challengeType == 2 && !hasCompletedChallenge)
+
+        if (skipEvaluation)
         {
-            IsHmdCloseToReferenceObject();
-        }
-        /* dont need this since we check it somewhere else
-        else if (quizQuestions[questionIndex].challengeType == 3 && !hasCompletedChallenge)
-        {
+            hasCompletedChallenge = true;
             HasUserFormedPistol();
-        }
-        */
-        else
-        {
+            EvaluateAnswer(answeredYes);
+            skipEvaluation = false;
             currentState = QuizState.Question;
+            return;
         }
     }
 
-    void GiveQuestion()
+    private void GiveQuestion()
     {
         ui.GetComponent<TextMeshProUGUI>().text = quizQuestions[questionIndex].questionText;
     }
 
     public void EvaluateAnswer(bool answeredYes)
     {
-        Debug.Log("Evaluating answer");
         quizQuestions[questionIndex].answeredYes = answeredYes;
         Debug.Log(quizQuestions[questionIndex].questionText + " was answered " + (answeredYes ? "Yes" : "No"));
         oldIndex = questionIndex;
@@ -164,19 +173,14 @@ public class QuizSystem : MonoBehaviour
 
     public void LetGo()
     {
-        Debug.Log("Let go");
-        Collider objColliders = quizQuestions[questionIndex].answerObj.GetComponent<Collider>();
         Collider[] childColliders = quizQuestions[questionIndex].answerObj.GetComponentsInChildren<Collider>(true);
-        Debug.Log(childColliders.Length);
 
         foreach (Collider childCollider in childColliders)
         {
             if (childCollider.gameObject.activeSelf && childCollider.CompareTag("Answer"))
             {
-                Debug.Log("Answer object found");
                 if (yesZone.GetComponentInChildren<Collider>().bounds.Intersects(childCollider.bounds))
                 {
-                    Debug.Log("Answered Yes");
                     answeredYes = true;
                     ResetObjtoOriginalPos(childCollider.gameObject);
                     EvaluateAnswer(answeredYes);
@@ -184,7 +188,6 @@ public class QuizSystem : MonoBehaviour
                 }
                 else if (noZone.GetComponentInChildren<Collider>().bounds.Intersects(childCollider.bounds))
                 {
-                    Debug.Log("Answered No");
                     answeredYes = false;
                     ResetObjtoOriginalPos(childCollider.gameObject);
                     EvaluateAnswer(answeredYes);
@@ -252,7 +255,7 @@ public class QuizSystem : MonoBehaviour
 
     public void HasUserFormedPistol()
     {
-        if(quizQuestions[questionIndex].provideChallenge && quizQuestions[questionIndex].challengeType == 3)
+        if (quizQuestions[questionIndex].provideChallenge && quizQuestions[questionIndex].challengeType == 3)
         {
             hasCompletedChallenge = true;
             quizQuestions[questionIndex].answerObj.SetActive(true);

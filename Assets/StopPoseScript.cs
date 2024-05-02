@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class StopPoseScript : MonoBehaviour
@@ -16,9 +17,12 @@ public class StopPoseScript : MonoBehaviour
         
     }
 
-    public void StopScene()
+    public void RestartScene()
     {
-        Debug.Log("Stop Scene");
-        //Application.Quit();
+        // Get the current scene index
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        // Reload the current scene
+        SceneManager.LoadScene(currentSceneIndex);
     }
 }
