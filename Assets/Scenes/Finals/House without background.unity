@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -133,7 +133,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_Name
-      value: big Spider Prefab (3)
+      value: semi real moving spider (big)
       objectReference: {fileID: 0}
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_IsActive
@@ -1370,7 +1370,7 @@ MonoBehaviour:
   skipEvaluation: 0
   hasCompletedChallenge: 0
   oldIndex: -1
-  distanceThreshold: 0.1
+  distanceThreshold: 0.2
   distanceToLeftHand: 0
   distanceToRightHand: 0
   questionText: {fileID: 1515750163}
@@ -2865,7 +2865,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_Name
-      value: Spider Prefab (1)
+      value: semi real moving spider
       objectReference: {fileID: 0}
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_IsActive
@@ -6491,37 +6491,6 @@ MonoBehaviour:
   _fingerFeatureStateProvider: {fileID: 1688354336}
   _shapes:
   - {fileID: 11400000, guid: 8f1fcf00771fde14b85c22a238bcc011, type: 2}
---- !u!1 &1044010794
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1044010795}
-  m_Layer: 0
-  m_Name: huntsman-spider (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1044010795
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1044010794}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1079060139
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6843,37 +6812,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1126371486}
   m_Mesh: {fileID: -5608163870604151220, guid: 4a50e75769f62bf42bf9afcc18daecc7, type: 3}
---- !u!1 &1140476589
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1140476590}
-  m_Layer: 0
-  m_Name: huntsman-spider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1140476590
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1140476589}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1143745310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11360,7 +11298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.233
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -11368,7 +11306,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.166
+      value: 0.579
       objectReference: {fileID: 0}
     - target: {fileID: 400004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -11610,7 +11548,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_Name
-      value: big Spider Prefab (2)
+      value: semi real spider (big)
       objectReference: {fileID: 0}
     - target: {fileID: 661429081765403009, guid: 31601975e2a1a974d9a00e6440ba146f, type: 3}
       propertyPath: m_IsActive
@@ -13086,37 +13024,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2143318536}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1968419205
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1968419206}
-  m_Layer: 0
-  m_Name: huntsman-spider (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1968419206
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1968419205}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1970345956
 GameObject:
@@ -17343,7 +17250,7 @@ GameObject:
   - component: {fileID: 3303568854910371418}
   - component: {fileID: 3303568854910371419}
   m_Layer: 0
-  m_Name: spider@walking
+  m_Name: real moving spider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20442,7 +20349,7 @@ GameObject:
   - component: {fileID: 6232566565752519951}
   - component: {fileID: 6716369980236490678}
   m_Layer: 0
-  m_Name: spider@idle
+  m_Name: real spider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22989,6 +22896,3 @@ SceneRoots:
   - {fileID: 654701135}
   - {fileID: 2143318536}
   - {fileID: 1663948549}
-  - {fileID: 1140476590}
-  - {fileID: 1968419206}
-  - {fileID: 1044010795}
