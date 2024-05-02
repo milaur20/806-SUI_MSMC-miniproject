@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Oculus.Interaction;
 
 [System.Serializable]
 public class QuizQuestion
@@ -19,6 +20,7 @@ public enum QuizState
 
 public class QuizSystem : MonoBehaviour
 {
+    private ActiveStateSelector gunPose;
     public QuizState currentState;
     public bool answeredYes;
     public int questionIndex;
@@ -120,6 +122,11 @@ public class QuizSystem : MonoBehaviour
         {
             challengeText = "Put your head close to the spider.";
         }
+        else if (quizQuestions[questionIndex].challengeType == 3)
+        {
+            quizQuestions[questionIndex].answerObj.SetActive(false);
+            challengeText = "Form a pistol with your hand, and aim here.";
+        }
 
         if (!string.IsNullOrEmpty(challengeText))
         {
@@ -136,6 +143,10 @@ public class QuizSystem : MonoBehaviour
         else if (quizQuestions[questionIndex].challengeType == 2 && !hasCompletedChallenge)
         {
             IsHmdCloseToReferenceObject();
+        }
+        else if (quizQuestions[questionIndex].challengeType == 3 && !hasCompletedChallenge)
+        {
+            HasUserFormedPistol();
         }
         else
         {
@@ -235,13 +246,23 @@ public class QuizSystem : MonoBehaviour
         }
     }
 
-    void IsHmdCloseToReferenceObject()
+    public void IsHmdCloseToReferenceObject()
     {
         float distanceToHmd = Vector3.Distance(headset.transform.position, referenceObject.transform.position);
 
         if (distanceToHmd <= distanceThreshold)
         {
             hasCompletedChallenge = true;
+            currentState = QuizState.Question;
+        }
+    }
+
+    public void HasUserFormedPistol()
+    {
+        if(quizQuestions[questionIndex].provideChallenge && quizQuestions[questionIndex].challengeType == 3)
+        {
+            hasCompletedChallenge = true;
+            quizQuestions[questionIndex].answerObj.SetActive(true);
             currentState = QuizState.Question;
         }
     }
