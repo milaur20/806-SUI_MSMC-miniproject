@@ -32,7 +32,7 @@ public class QuizSystem : MonoBehaviour
     public bool hasCompletedChallenge;
     public int questionIndex;
     public int oldIndex = -1;
-
+    public AudioSource soundCue;
     public float distanceThreshold = 0.1f;
     public float distanceToLeftHand;
     public float distanceToRightHand;
@@ -165,6 +165,7 @@ public class QuizSystem : MonoBehaviour
     {
         quizQuestions[questionIndex].answeredYes = answeredYes;
         Debug.Log(quizQuestions[questionIndex].questionText + " was answered " + (answeredYes ? "Yes" : "No"));
+        soundCue.Play();
         oldIndex = questionIndex;
         questionIndex++;
         hasCompletedChallenge = false;
