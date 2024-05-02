@@ -61,11 +61,11 @@ public class QuizSystem : MonoBehaviour
         {
             case QuizState.Question:
                 UpdateQuestionState();
-                Debug.Log("Question state");
+                //Debug.Log("Question state");
                 break;
             case QuizState.Challenge:
                 UpdateChallengeState();
-                Debug.Log("Challenge state");
+                //Debug.Log("Challenge state");
                 break;
         }
     }
@@ -97,16 +97,6 @@ public class QuizSystem : MonoBehaviour
     {
         ProvideChallenge();
         CheckIfChallengeCompleted();
-    }
-
-    void UpdateAnswerEvaluationState()
-    {
-        CheckIfChallengeCompleted();
-        if (hasCompletedChallenge)
-        {
-            currentState = QuizState.Question;
-            GiveQuestion();
-        }
     }
 
     void ProvideChallenge()
@@ -144,10 +134,12 @@ public class QuizSystem : MonoBehaviour
         {
             IsHmdCloseToReferenceObject();
         }
+        /* dont need this since we check it somewhere else
         else if (quizQuestions[questionIndex].challengeType == 3 && !hasCompletedChallenge)
         {
             HasUserFormedPistol();
         }
+        */
         else
         {
             currentState = QuizState.Question;
@@ -159,8 +151,9 @@ public class QuizSystem : MonoBehaviour
         ui.GetComponent<TextMeshProUGUI>().text = quizQuestions[questionIndex].questionText;
     }
 
-    void EvaluateAnswer(bool answeredYes)
+    public void EvaluateAnswer(bool answeredYes)
     {
+        Debug.Log("Evaluating answer");
         quizQuestions[questionIndex].answeredYes = answeredYes;
         Debug.Log(quizQuestions[questionIndex].questionText + " was answered " + (answeredYes ? "Yes" : "No"));
         oldIndex = questionIndex;

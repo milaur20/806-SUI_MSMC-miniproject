@@ -8,6 +8,7 @@ public enum LaserPointers
 }
 public class MoveToPoint : MonoBehaviour
 {
+    private QuizSystem quizSystem;
     public Transform startingPosition;
     public GameObject goalPosition;
     public LaserPointers currentState;
@@ -23,8 +24,9 @@ public class MoveToPoint : MonoBehaviour
 
         laserPointerRight = GameObject.Find("LaserPointer_r").GetComponentInChildren<LaserPointer>();
         
-        transform.position = startingPosition.position;
+        quizSystem = FindAnyObjectByType<QuizSystem>();
 
+        transform.position = startingPosition.position;
     }
     private void Update()
     {
@@ -48,6 +50,7 @@ public class MoveToPoint : MonoBehaviour
                 currentState = LaserPointers.LeftLaserPointer;
             }
         }
+
         switch (currentState)
         {
             case LaserPointers.Inactive:
@@ -63,7 +66,7 @@ public class MoveToPoint : MonoBehaviour
         if (gameObject.GetComponent<Collider>().bounds.Intersects(goalPosition.GetComponent<Collider>().bounds))
         {
             Debug.Log("Goal Reached");
-            Destroy(gameObject);
+            quizSystem.EvaluateAnswer(true);
         }
         //check if collider is hitting object with respawn tag
         else if (gameObject.GetComponent<Collider>().bounds.Intersects(GameObject.FindGameObjectWithTag("Respawn").GetComponent<Collider>().bounds))
