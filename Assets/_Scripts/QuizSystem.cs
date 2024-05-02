@@ -55,6 +55,7 @@ public class QuizSystem : MonoBehaviour
     private void Start()
     {
         originalPos = quizQuestions[questionIndex].answerObj.transform.position;
+        soundCue = GetComponent<AudioSource>();
         EnableAnswerObj();
     }
 
